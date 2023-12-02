@@ -1,30 +1,33 @@
 # unity-nvim
 
 ## About
-Set neovim as a functional editor for Unity 2020 and above. Opens neovim when editing script from unity, and also regenerate files without having to install VisualStudio/VSCode.
+A executable wrapper around `nvim.exe`. 
+1. Open files in nvim from Unity GUI
+2. (Re)Generate c# project files from within Unity (useful for getting nvim LSP working with project) without having to download VSCode/Visual Studio/Rider. 
+
+Note: This project does not include nvim LSP setup. 
 
 ## Requirements 
-1. Unity >= 2020.3 
-2. neovim >= 0.9 
-3. Omnisharp lsp: For code completion etc
-    - Note Omnisharp lsp requires dotnet version 6.
-4. dotnet >= 6.0
+- Unity >= 2020.3 
+- neovim >= 0.9 
+- dotnet >= 6.0 (if publishing the module)
 
 ## Setup
-1. With some version of dotnet >= 6.0 installed, run the following command from this projects root folder.
+With some version of dotnet >= 6.0 installed, run the following command from this projects root folder.
 ```
 dotnet publish -c Release -r win-x64 --self-contained  -o ./publish -p:PublishSingleFile=true /p:AssemblyName=code /p:DebugSymbols=false /p:DebugType=None
 ```
-This creates an executable `code.exe` in a new folder `publish`. The executable opens neovim with command line options. 
+Note that `AssemblyName=code` is to ensure the executable is named `code.exe`. This tricks Unity into thinking the external editor is VSChode, which allows for regenerating project files.
+Alternatively simply download `code.exe` from releases.
 
-2. In Unity go to `Edit->Preferences->External Tools`, and select the `browse` in the `External Script Editor` option. Navigate to `publish` and select `code.exe`. 
-The menu should update with a list of checkboxes for generating files. Check `Embedded Packages` and `Local Packages`. Then click `Regenerate project files`. 
-3. Paste `$(File) + $(Line)` in the `External Script Editor Args` option.
+Now simply go to `Edit->Preferences->External Tools`, and `browse` in the `External Script Editor` field to select the above published executable.
+In the `External Script Editor Args` field, paste `$(File) + $(Line)`.
 
-## Why?
-Regenrating project files is esssential to get the benefits of LSP, such as suggestions and autocomplete. 
-Unity only allows regenerating project files when using VSChode/Visual Studio Code or Rider. 
-However, unity only checks the name of the executable. We name the executable `code.exe` to make unity think we are using VSChode and allow regenerating project files. 
+The menu will update with a list of checkboxes below `External Script Editor`. Check `Embedded Packages` and `Local Packages` and click `Regenerate project files`.
+
+Clicking `Edit Script` in Unity or clicking on error messages in the console will now open neovim. If you have an LSP setup, the LSP will be able to successfully detect the root project directory and attach to the file. 
+
+Note: Omnisharp LSP seems to work the best with Unity. However, it can be slow on startup and it may take a while for LSP functionality (eg. renames/code actions) to start functioning. 
 
 
 
