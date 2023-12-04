@@ -93,7 +93,7 @@ class ConsoleApp
 		ProcessStartInfo psi = new ProcessStartInfo{
 			FileName = "nvim.exe",
 			Arguments = nvimArgs,
-			CreateNoWindow = false,
+			CreateNoWindow = true,
 			UseShellExecute = true
 		};
 
@@ -112,13 +112,13 @@ class ConsoleApp
 		}
 
 		Console.WriteLine($"Args: {nvimCommand}");
-		nvimCommand = @"/K" + " " + "nvim" + " " + "--server" + " " + pipeName + " " + "--remote" + " " + nvimCommand;
+		nvimCommand = @"/C" + " " + "nvim" + " " + "--server" + " " + pipeName + " " + "--remote" + " " + nvimCommand;
 
 		ProcessStartInfo psi = new ProcessStartInfo{
 			FileName = "cmd.exe",
 			Arguments = nvimCommand,
-			UseShellExecute = true,
-			CreateNoWindow = false
+			CreateNoWindow = true,
+			UseShellExecute = true
 		};
 
 		using (Process process = new Process {StartInfo = psi}) {
