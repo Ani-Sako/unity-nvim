@@ -109,15 +109,13 @@ class ConsoleApp
 	}
 
 	static void OpenFileNvimPipe (string pipeName, string[] arguments) {
+		string remoteSendCLArgument = @"/C" + " " + "nvim" + " " + "--server" + " " + pipeName + " " + "--remote-send";
+
 		string nvimCommand = string.Join(" ", arguments);
+		nvimCommand = remoteSendCLArgument + " " + "\":e" + nvimCommand + " " + "<CR>\"";
 
-		foreach (string arg in arguments)
-		{
-			Console.WriteLine(arg);
-		}
+		// nvimCommand = @"/C" + " " + "nvim" + " " + "--server" + " " + pipeName + " " + "--remote" + " " + nvimCommand;
 
-		Console.WriteLine($"Args: {nvimCommand}");
-		nvimCommand = @"/C" + " " + "nvim" + " " + "--server" + " " + pipeName + " " + "--remote" + " " + nvimCommand;
 
 		ProcessStartInfo psi = new ProcessStartInfo{
 			FileName = "cmd.exe",
