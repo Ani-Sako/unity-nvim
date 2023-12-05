@@ -13,7 +13,7 @@ class ConsoleApp
 		}
 		else {
 			Console.WriteLine($"Pipe {pipeName} does not exist, creating pipe");
-			CreateNamedPipe(pipeName);
+			CreateNamedPipe(pipeName, args);
 		}
 	}
 
@@ -74,21 +74,27 @@ class ConsoleApp
 		}
 	}
 
-	static void CreateNamedPipe(string pipeName) {
+	static void CreateNamedPipe(string pipeName, string[] arguments) {
 		using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(pipeName, PipeDirection.InOut)) {
 			Console.WriteLine($"Named pipe '{pipeName}' created.");
+
 			RegisterPipe(pipeName);
 			Console.WriteLine($"Named pipe '{pipeName}' registered.");
-			LaunchNvim(pipeName);
-			Console.WriteLine($"Launched nvim");
+
+			using(Process nvimProcess = LaunchNvimServer(pipeName)) {
+				Console.WriteLine($"Launched nvim server");
+				OpenFileNvimPipe(pipeName, arguments);
+				Console.WriteLine($"Opened initial file in nvim");
+				nvimProcess.WaitForExit();
+			}
 		}
+		Console.WriteLine($"Neovim server closed.");
 		DeregisterPipe(pipeName);
-		Console.WriteLine($"Neovim Instance closed, pipe closed and deregistered");
+		Console.WriteLine($"Pipe {pipeName} deregistered and will be closed");
 	}
 
-	static void LaunchNvim (string pipeName) {
+	static Process LaunchNvimServer (string pipeName) {
 		string nvimArgs = "--listen" + " " + pipeName;
-		Console.WriteLine($"Args are: {nvimArgs}");
 
 		ProcessStartInfo psi = new ProcessStartInfo{
 			FileName = "nvim.exe",
@@ -97,10 +103,9 @@ class ConsoleApp
 			UseShellExecute = true
 		};
 
-		using (Process process = new Process {StartInfo = psi}) {
-			process.Start();
-			process.WaitForExit();
-		}
+		Process process = new Process {StartInfo = psi};
+		process.Start();
+		return process;
 	}
 
 	static void OpenFileNvimPipe (string pipeName, string[] arguments) {
