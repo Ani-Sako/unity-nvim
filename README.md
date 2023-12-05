@@ -1,13 +1,15 @@
 # unity-nvim
 
 ## About
-A executable wrapper around `nvim.exe`. 
+A executable wrapper around `nvim.exe` that 
 1. Open files in nvim from Unity GUI
+2. Opens all files in the same neovim instance
 2. (Re)Generate c# project files from within Unity (useful for getting nvim LSP working with project) without having to download VSCode/Visual Studio/Rider. 
 
 Note: This project does not include nvim LSP setup. 
 
 ## Requirements 
+- Windows >= 10
 - Unity >= 2020.3 
 - neovim >= 0.9 
 - dotnet >= 6.0 (if publishing the module)
