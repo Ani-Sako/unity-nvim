@@ -88,6 +88,7 @@ class ConsoleApp
 				nvimProcess.WaitForExit();
 			}
 		}
+
 		Console.WriteLine($"Neovim server closed.");
 		DeregisterPipe(pipeName);
 		Console.WriteLine($"Pipe {pipeName} deregistered and will be closed");
@@ -113,9 +114,6 @@ class ConsoleApp
 
 		string nvimCommand = string.Join(" ", arguments);
 		nvimCommand = remoteSendCLArgument + " " + "\":e" + nvimCommand + " " + "<CR>\"";
-
-		// nvimCommand = @"/C" + " " + "nvim" + " " + "--server" + " " + pipeName + " " + "--remote" + " " + nvimCommand;
-
 
 		ProcessStartInfo psi = new ProcessStartInfo{
 			FileName = "cmd.exe",
