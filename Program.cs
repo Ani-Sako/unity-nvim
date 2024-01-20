@@ -112,8 +112,17 @@ class ConsoleApp
 	static void OpenFileNvimPipe (string pipeName, string[] arguments) {
 		string remoteSendCLArgument = @"/C" + " " + "nvim" + " " + "--server" + " " + pipeName + " " + "--remote-send";
 
-		string nvimCommand = string.Join(" ", arguments);
-		nvimCommand = remoteSendCLArgument + " " + "\":e" + nvimCommand + " " + "<CR>\"";
+		// string nvimCommand = string.Join(" ", arguments);
+		// nvimCommand = remoteSendCLArgument + " " + "\":e" + nvimCommand + " " + "<CR>\"";
+
+		string currentDirectory = arguments[0];
+		string[] splitVsChodeArgument = arguments[2].Split(":");
+		string lineNumber = splitVsChodeArgument[2];
+		string absoluteFilePath = splitVsChodeArgument[0]+ ":" + splitVsChodeArgument[1];
+		string relativeFilePath = absoluteFilePath.Replace(currentDirectory,"");
+
+		string nvimCommand = remoteSendCLArgument + " " + "\":e " + "+" + lineNumber + " " + relativeFilePath + "<CR>\"";
+
 
 		ProcessStartInfo psi = new ProcessStartInfo{
 			FileName = "cmd.exe",
