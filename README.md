@@ -12,6 +12,7 @@ This project allows you to:
 Note: This project does not include nvim LSP setup. 
 
 ## Requirements 
+- Windows >= 10
 - Unity >= 2020.3 
 - neovim >= 0.9 
 - dotnet >= 6.0 (if publishing the module, alternatively download the latest release executable). 
